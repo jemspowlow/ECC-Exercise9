@@ -1,8 +1,17 @@
-
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Date;
+import org.hibernate.HibernateException; 
+import org.hibernate.Session; 
+import org.hibernate.Transaction;
+import entities.*;
 public class Menu {
-	private Dispatcher dispatcher;
+	
 	public Menu(){
-		dispatcher = new Dispatcher();
+	
 	 }
 	
 	public static void main(String[] args) {
@@ -16,7 +25,7 @@ public class Menu {
 		Date bd = Date.from(birthDay.atStartOfDay(ZoneId.systemDefault()).toInstant());  
 		Date dh = Date.from(dateHired.atStartOfDay(ZoneId.systemDefault()).toInstant());  
       /* Add employee records in the database */
-      Integer personID1 = ME.addPerson("James","Menguito","Wagas",bd,dh,2.50,"MALE",true,"UPLB",address,contactInfo);
+     // Integer personID1 = ME.addPerson("James","Menguito","Wagas",bd,dh,2.50,"MALE",true,"UPLB",address,contactInfo);
       /* Add another employee record in the database */
      // Integer personID2 = ME.addEmployee("Dilip", "Kumar", 3000, address);
 
@@ -36,7 +45,7 @@ public class Menu {
    }
    
    public void displayMenu() {
-   		int choice;
+   		int choice=0;
    		
    		System.out.println("Select Entity:");
    		switch(choice){

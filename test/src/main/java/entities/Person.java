@@ -7,10 +7,7 @@ public class Person{
 	
 	
 	private int id;
-	//private Name name;
-	private String firstName;
-		private String lastName;
-		private String middleName;
+	private Name name;
 	private Date birthDay;
 	private Date dateHired;
 	private double gwa;
@@ -20,12 +17,10 @@ public class Person{
 	private Address address;
 	private List<Contact> contactInfo;
 		
-	public Person() {}
+	public Person() {
+	}
 	public Person(String firstName, String lastName, String middleName, Date birthDay, Date dateHired, double gwa, String gender, 		boolean employed, String school, Address address, List<Contact> contactInfo) {
-			//name = new Name(firstName,lastName,middleName);
-			this.firstName = firstName;
-			this.lastName = lastName;
-			this.middleName = middleName;
+			this.name = new Name(firstName,lastName,middleName);
 			this.birthDay = birthDay;
 			this.dateHired = dateHired;
 			this.gwa = gwa;
@@ -62,14 +57,7 @@ public class Person{
 	public void setId(int id) {
 		this.id = id;
 	 }
-	 /*	  
-	public Name getName() {
-		return name;
-	 }
-	public void setName(Name name) {
-		this.name = name;
-	 }
-	*/
+
 	public String getGender() {
 		return gender;
 	 }
@@ -132,35 +120,18 @@ public class Person{
 	public void setDateHired(Date dateHired) {
 		this.dateHired = dateHired;
 	 }
-	 
-	 public String getFirstName() {
-			return firstName;
-		 }
-	
-	public String getLastName() {
-			return lastName;
-	}
-	
-	public String getMiddleName() {
-			return middleName;
-	} 
-	
-	public void setFirstName(String firstName) {
-	 		this.firstName = firstName;
-	}
-		 
-	public void setLastName(String lastName) {
-	 		this.lastName = lastName;
+	public Name getName() { 
+		return name;
+	 } 
+	public void setName(Name name) {
+		this.name = name;
 	 }
-	 	
-	public void setMiddleName(String middleName) {
-	 		this.middleName = middleName;
-	 }
-	/*
-	public class Name {
+
+	public static class Name {
 		private String firstName;
 		private String lastName;
 		private String middleName;
+		public Name() {}
 		
 		public Name (String firstName, String lastName, String middleName) {
 			this.firstName = firstName;
@@ -191,5 +162,5 @@ public class Person{
 	 	public void setMiddleName(String middleName) {
 	 		this.middleName = middleName;
 	 	 }
-	 }*/
+	 }
 }

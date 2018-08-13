@@ -1,7 +1,11 @@
 Gender.class
-entities/Person.class
 HibernateUtil.class
 ManagePerson.class
-entities/Contact.class
+entities/Person$Name.class
 entities/Address.class
+PersonView.class
 entities/Contact$ContactType.class
+entities/Person.class
+entities/Contact.class
+Menu.class
+PersonDAO.class
