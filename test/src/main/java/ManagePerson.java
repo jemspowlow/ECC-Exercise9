@@ -10,26 +10,23 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import entities.*;
 public class ManagePerson {
-   
+   private EntityUtil eu = new EntityUtil();
    public ManagePerson() {}
    
    public static void main(String[] args) {
    		PersonView pv = new PersonView();   
       
       ManagePerson ME = new ManagePerson();
-	  List<Contact> contactInfo = new ArrayList<Contact>();
-      Address address = ME.addAddress("9","Pasig","1600");
-	  LocalDate birthDay = LocalDate.of(1996,9,23);
-	  LocalDate dateHired = LocalDate.of(2018,6,18);
-		Date bd = Date.from(birthDay.atStartOfDay(ZoneId.systemDefault()).toInstant());  
-		Date dh = Date.from(dateHired.atStartOfDay(ZoneId.systemDefault()).toInstant());  
+
       /* Add employee records in the database */
-      Person person = pv.addMenu();
-      Integer personID1 = ME.addPerson(person);
+      //Person person = pv.addMenu();
+      //Integer personID1 = ME.addPerson(person);
       /* Add another employee record in the database */
      // Integer personID2 = ME.addEmployee("Dilip", "Kumar", 3000, address);
 
       /* List down all the employees */
+      //ME.listPeople();
+      pv.menu(2);
       ME.listPeople();
 	  HibernateUtil.shutdown();
 	  System.exit(0);
@@ -95,14 +92,8 @@ public class ManagePerson {
          List persons = session.createQuery("FROM Person").list(); 
          for (Iterator iterator = persons.iterator(); iterator.hasNext();){
             Person person = (Person) iterator.next(); 
-            System.out.println("First Name: " + person.getName().getFirstName()); 
-            System.out.println("  Last Name: " + person.getName().getLastName()); 
-            System.out.println("  GWA: " + person.getGwa());
-            Address add = person.getAddress();
-            System.out.println("Address ");
-            System.out.println("\tStreet: " +  add.getStreetNumber());
-            System.out.println("\tCity: " + add.getCity());
-            System.out.println("\tZipcode: " + add.getZipCode());
+            eu.printPerson(person);
+         	
          }
          tx.commit();
       } catch (HibernateException e) {
@@ -112,7 +103,7 @@ public class ManagePerson {
          session.close(); 
       }
      
-   }
+   } 
    
    /* Method to update salary for an employee 
    public void updateEmployee(Integer EmployeeID, int salary ){

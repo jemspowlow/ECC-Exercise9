@@ -3,10 +3,8 @@ public class Contact {
 		private int id;
 		private ContactType type;
 		private String details;
-		
-		private enum ContactType {
-		MOBILE,LANDLINE,EMAIL;
-	 	}
+		private int idx;
+	
 		public Contact(){}
 		public Contact(ContactType type, String details) {
 			this.type = type;
@@ -35,4 +33,10 @@ public class Contact {
 		public void setDetails (String details) {
 			this.details = details;
 		 } 
+		public int getIdx(){
+			return idx;
+		 }
+		public void setIdx(int idx) {
+			this.idx = idx;
+		 }
 	 }

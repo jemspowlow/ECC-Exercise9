@@ -11,7 +11,7 @@ public class Person{
 	private Date birthDay;
 	private Date dateHired;
 	private double gwa;
-	private String gender;
+	private Gender gender;
 	private boolean employed;
 	private String school;
 	private Address address;
@@ -19,37 +19,7 @@ public class Person{
 		
 	public Person() {
 	}
-	public Person(String firstName, String lastName, String middleName, Date birthDay, Date dateHired, double gwa, String gender, 		boolean employed, String school, Address address, List<Contact> contactInfo) {
-			this.name = new Name(firstName,lastName,middleName);
-			this.birthDay = birthDay;
-			this.dateHired = dateHired;
-			this.gwa = gwa;
-			this.gender = gender;
-			this.employed = employed;
-			this.school = school;
-			this.address = address;
-			this.contactInfo = contactInfo;		
-	 }
-	public static void main(String[] args) {
-		Address address = new Address("9","Pasig","1600");
-		List<Contact> contactInfo = new ArrayList<Contact>();
-	//	Person james = new Person("James","Menguito","Wagas",Date.of(1996,9,23),Date.of(2018,6,18),2.50,Gender.MALE,true,"UPLB",address,contactInfo);	
-		
-		//Person.Name name = james. new Name("James Paolo","Menguito","Wagas");
-		
-		//james.setName(name);
-		//System.out.println(james.getFirstName());
-		//james.setGender(Gender.MALE);
-		//System.out.println(james.getGender());
-		
-	 	///james.setGWA(2.52);
-	 	//System.out.println(james.getGwa());
-	 	//james.setSchool("UPLB");
-	 	//System.out.println(james.getSchool());
-	 	//james.setBirthDay(Date.of(1996,9,23));
-	 	//System.out.println(james.getBirthDay().toString());
-	 }
-	 
+	
 	public int getId() {
 		return id;
 	 }
@@ -58,11 +28,11 @@ public class Person{
 		this.id = id;
 	 }
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	 }
 	
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	 }
 	 

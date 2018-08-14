@@ -8,9 +8,15 @@
 	<id name="id" column="id" type="int">
 		<generator class="native"/>
 	</id>
-	
-	<property name="type" column="type" type="string"/>
+		
+		<property name="type" column="type">
+		<type name="org.hibernate.type.EnumType">
+			<param name="enumClass">entities.ContactType</param>
+			<param name="useNamed">true</param>
+		</type>	
+		</property>
 	<property name="details" column="details" type="string"/>
+	<property name="idx" column="idx" type="int"/>
 
 </class>	
 

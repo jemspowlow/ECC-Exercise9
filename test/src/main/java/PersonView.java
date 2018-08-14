@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Date;
+import java.util.Optional;
 public class PersonView {
 	private PersonDAO pd;
+	private ContactView cv;
+	private EntityUtil eu;
+	
 	Scanner input = new Scanner(System.in).useDelimiter("\\n");
 	public PersonView(){
 		pd = new PersonDAO();
+		cv = new ContactView();
+	 	eu = new EntityUtil();
 	 }
-	
-	public void printPerson(Person person){
-		System.out.println();
-	
-	 }
-	
-	public void printMenu() {
+    
+    public void printMenu() {
 		System.out.println("===Menu===");
 		System.out.println("[1]Add Person");
 		System.out.println("[2]Update Person");
@@ -35,22 +36,35 @@ public class PersonView {
 		System.out.println("[6]GWA ");
 		System.out.println("[7]Employment Status ");
 		System.out.println("[8]Date Hired ");
-		System.out.println("[9]Exit ");
+		System.out.println("[9]Gender");
+		System.out.println("[10]Exit ");
 	 }
 	
 	public void menu(int choice) {
 		Person person;
+		int id;
+		printMenu();
 		switch(choice) {
 			case 1: person = addMenu();
 					pd.addPerson(person);
 				break;
 				
-			case 2: person = updatePerson();
+			case 2: pd.listPeople();
+					System.out.print("Select ID: ");
+					id = input.nextInt();
+					System.out.println("\n=====Editing Person=====");
+					person = pd.getPerson(id);
+					person = updatePerson(person);
+					System.out.println("==========================");
 					pd.updatePerson(person);
-			
-			case 3:
+				break;
+			case 3: pd.listPeople();
+					System.out.print("Select ID: ");
+					id = input.nextInt();
+					pd.deletePerson(id);
 			
 			case 4:
+				break;
 			
 			default: break;
 		
@@ -69,12 +83,14 @@ public class PersonView {
 		person.setName(createName());
 		System.out.println("Birthday: ");
 		person.setBirthDay(createDate());
+		person.setGender(createGender());
 		person.setAddress(createAddress());
 		person.setSchool(createSchool());
 		person.setGwa(createGwa());
-		person.setEmployment(createEmployment());
+		person.setEmployed(createEmployment());
 		
 		createDateHired(person);
+		person.setcontactInfo(createContactInfo(person));
 		
 		return person;
 	  }
@@ -88,7 +104,7 @@ public class PersonView {
 	 	lastName = input.next();
 	 	System.out.print("Middle name: ");
 		middleName = input.next();	
-		return new Person.Name(firstName,lastName,middleName));
+		return new Person.Name(firstName,lastName,middleName);
 	
 	}
 	
@@ -121,53 +137,99 @@ public class PersonView {
 		return new Address(streetNumber,city,zipCode);
 		 
 	 }
-	 
+	 public Gender createGender() {
+	 	System.out.println("Gender(1=MALE,2=FEMALE): ");
+		int gender = input.nextInt();
+		if(gender==1) return Gender.MALE;
+		else return Gender.FEMALE;	
+	  }
 	 public double createGwa() {
 	 	System.out.print("GWA: ");
-		gwa = input.nextDouble();
-		person.setGwa(gwa);
+		double gwa = input.nextDouble();
+		return gwa;
 	 
 	  }
 	  
 	 public String createSchool() {
 	 	System.out.print("School: ");
-		school = input.next();
-		person.setSchool(school);
+		String school = input.next();
+		return school;
 		 
 	  }
 	 public boolean createEmployment() {
 	 	System.out.println("Employed(1=Yes,2=No): ");
-		employed = input.nextInt();
+		int employed = input.nextInt();
 		if(employed==1) return true;
 		else return false;
 	  }
 	  
-	 public void createDateHired(Person person) {
+	 public Person createDateHired(Person person) {
 	 	if(person.isEmployed()) person.setDateHired(createDate());
 	 	else person.setDateHired(null);
+	 	return person;
+	  }
 	 
-	  }
-	 public Person updatePerson() {
-	 	int choice = 0;
-	 	switch(choice) {
-	 		case 1: 
-	 		
-	 		case 2:
-	 		
-	 		case 3:
-	 		
-	 		case 4:
-	 		
-	 		case 5:
-	 		
-	 		case 6:
-	 		
-	 		case 7:
-	 		
-	 		case 8:
-	 		
-	 		case 9:
+	 public List<Contact> createContactInfo(Person person){
+	 	List<Contact> contactList;
 	 	
-	 	 }
+	 	int choice = 0;
+	  	Optional<List<Contact>> optList = Optional.ofNullable(person.getcontactInfo());
+	  	if(!optList.isPresent()) contactList = new ArrayList<Contact>();
+        else contactList = optList.get();
+ 
+    	do { 	
+    			for(Contact contact : contactList) {
+    				eu.printContact(contact);
+    			
+    			 }
+    			System.out.println("[1]Add Contact");
+    			System.out.println("[2]Edit Contact");
+    			System.out.println("[3] Exit ");
+    			System.out.println("Choice: ");
+    			choice = input.nextInt();
+    			switch(choice) {
+    				case 1: contactList.add(cv.addMenu());
+    				case 2: System.out.print("Enter index of contact: ");
+    						int contactIdx = input.nextInt();
+    						cv.editContact(contactList.get(contactIdx));
+    				case 3: 
+    					break;
+    				default:
+    					break;
+    			 }	
+    		
+    		} while(choice != 2);
+    	return contactList;
 	  }
+	 public Person updatePerson(Person person) {
+	 	int choice = 0;
+	 	updateMenu();
+	 	choice = input.nextInt();
+	 	switch(choice) {
+	 		case 1: person.setName(createName());
+	 			break;
+	 		case 2: person.setAddress(createAddress());
+	 			break;
+	 		case 3: person.setcontactInfo(createContactInfo(person));
+	 			break;
+	 		case 4:	person.setBirthDay(createDate());
+	 			break;
+	 		case 5:	person.setSchool(createSchool());
+	 			break;
+	 		case 6:	person.setGwa(createGwa());
+	 			break;
+	 		case 7: person.setEmployed(createEmployment());
+	 			break;
+	 		case 8: person = createDateHired(person);
+	 			break;
+	 		case 9: person.setGender(createGender());
+	 			break;
+	 		case 10:
+	 			break;
+	 		default:
+	 			break;
+	 	 }
+	 	 return person;
+	 }
+	   
  }
