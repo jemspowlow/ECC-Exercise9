@@ -2,6 +2,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import entities.*;
 import org.hibernate.HibernateException; 
 import org.hibernate.Session; 
@@ -94,24 +96,23 @@ public class PersonDAO {
       }
    }
    
-   public void listPeople(){
+   public List listPeople(String sortQuery) {
+
       Session session = HibernateUtil.getSessionFactory().openSession();
       Transaction tx = null;
-      
+      Set persons = null;
       try {
          tx = session.beginTransaction();
-         List persons = session.createQuery("FROM Person").list(); 
-         for (Iterator iterator = persons.iterator(); iterator.hasNext();){
-            Person person = (Person) iterator.next(); 
-          	eu.printPerson(person);
-         }
+         persons = new LinkedHashSet(session.createQuery("FROM Person p left join fetch p.address left join fetch p.contactInfo "+sortQuery).list()); 
+		
          tx.commit();
-      } catch (HibernateException e) {
+       } catch (HibernateException e) {
          if (tx!=null) tx.rollback();
          e.printStackTrace(); 
-      } finally {
+       } finally {
          session.close(); 
-      }
-     
+       }
+  		
+  		return new ArrayList(persons);   
     } 
  }

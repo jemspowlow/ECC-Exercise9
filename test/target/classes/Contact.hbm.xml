@@ -4,9 +4,9 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-<class name="entities.Contact" table="contact">	
+<class name="entities.Contact" table="public.contact">	
 	<id name="id" column="id" type="int">
-		<generator class="native"/>
+		<generator class="increment"/>
 	</id>
 		
 		<property name="type" column="type">

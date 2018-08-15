@@ -3,10 +3,10 @@
 "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-<class name="entities.Person" table="person">
+<class name="entities.Person" table="public.person">
 	
 	<id name="id" column="id" type="int">
-		<generator class="native"/>
+		<generator class="increment"/>
 	</id>
 	<component name="name">
 	<property name="firstName" column="first_name"	type="string"	/>

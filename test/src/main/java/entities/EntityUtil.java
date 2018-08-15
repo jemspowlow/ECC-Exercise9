@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Iterator;
+import java.util.Set;
 import entities.*;
 public class EntityUtil {
 	public EntityUtil(){};
@@ -35,5 +36,11 @@ public class EntityUtil {
 		System.out.println("\tContact Index: "+contact.getIdx());
 	 	System.out.println("");	
 	 }
-
+	public void printList(List persons) {
+		
+		for (Iterator iterator = persons.iterator(); iterator.hasNext();){
+            Person person = (Person) iterator.next(); 
+          	printPerson(person);
+         }
+	 }
  }

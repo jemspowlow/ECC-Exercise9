@@ -1,5 +1,5 @@
+Regsystem.class
 HibernateUtil.class
-ManagePerson.class
 entities/ContactType.class
 entities/Person$Name.class
 entities/Address.class

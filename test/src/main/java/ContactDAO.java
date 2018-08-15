@@ -7,10 +7,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session; 
 import org.hibernate.Transaction;
 public class ContactDAO {
-	public ContactDAO() { }
-
+	private EntityUtil eu;
+	public ContactDAO() {
+	  eu = new EntityUtil();
+	 }
+		
 	public Contact getContact(int id){
-      EntityUtil eu = new EntityUtil();
+      
       Session session =  HibernateUtil.getSessionFactory().openSession();
       Transaction tx = null;
       Contact contact = null;
@@ -92,6 +95,27 @@ public class ContactDAO {
          session.close(); 
       }
    }
+   
+   public void listContacts(){
+      Session session = HibernateUtil.getSessionFactory().openSession();
+      Transaction tx = null;
+      Contact contact;
+      try {
+         tx = session.beginTransaction();
+         List contacts = session.createQuery("FROM Contact").list(); 
+         for (Iterator iterator = contacts.iterator(); iterator.hasNext();){
+            contact = (Contact) iterator.next(); 
+          	eu.printContact(contact);
+         }
+         tx.commit();
+      } catch (HibernateException e) {
+         if (tx!=null) tx.rollback();
+         e.printStackTrace(); 
+      } finally {
+         session.close(); 
+      }
+     
+    }
    
   
  }
