@@ -16,12 +16,13 @@ public class PersonView {
 	private PersonDAO pd;
 	private ContactView cv;
 	private EntityUtil eu;
-	
-	Scanner input = new Scanner(System.in).useDelimiter("\\n");
+	private InputUtil iu;
+	//Scanner input = new Scanner(System.in).useDelimiter("\\n");
 	public PersonView(){
 		pd = new PersonDAO();
 		cv = new ContactView();
 	 	eu = new EntityUtil();
+	 	iu = new InputUtil();
 	 }
     
     public void printMenu() {
@@ -34,7 +35,7 @@ public class PersonView {
 			System.out.println("[4]List People");
 			System.out.println("[5]Exit");
 			System.out.print("Choice: ");
-			choice = input.nextInt();
+			choice = iu.getInt(0,5);
 		 	menu(choice);
 		 	
 		 } while(choice!=5);
@@ -53,7 +54,7 @@ public class PersonView {
 				
 			case 2: eu.printList(pd.listPeople(""));
 					System.out.print("Select ID: ");
-					id = input.nextInt();
+					id = iu.getInt(0,0);
 					System.out.println("\n=====Editing Person=====");
 					person = pd.getPerson(id);
 					person = updateMenu(person);
@@ -62,7 +63,7 @@ public class PersonView {
 				break;
 			case 3: eu.printList(pd.listPeople(""));
 					System.out.print("Select ID: ");
-					id = input.nextInt();
+					id = iu.getInt(0,0);
 					pd.deletePerson(id);
 				break;
 			case 4:	sortMenu();
@@ -85,13 +86,13 @@ public class PersonView {
 		 	System.out.println("[3] Last Name");
 		 	System.out.println("[4] By ID (Default)");
 		 	System.out.print("Choice: ");
-		 	choice = input.nextInt();
+		 	choice = iu.getInt(0,5);
 			
 			System.out.println("\nOrder: ");
 		 	System.out.println("[1] Ascending (Default)");
 		 	System.out.println("[2] Descending");
 		 	System.out.print("Choice: ");
-		 	choice2 = input.nextInt();
+		 	choice2 = iu.getInt(0,3);
 			
 		 	sortPerson(choice,choice2);
 	 	
@@ -159,66 +160,75 @@ public class PersonView {
 	 	String lastName;
 	 	String middleName;
 		System.out.print("First name: ");
-	 	firstName = input.next();
+	 	firstName = iu.getString(100);
 	 	System.out.print("Last name: ");
-	 	lastName = input.next();
+	 	lastName = iu.getString(100);
 	 	System.out.print("Middle name: ");
-		middleName = input.next();	
+		middleName = iu.getString(100);	
 		return new Person.Name(firstName,lastName,middleName);
 	
 	}
 	
 	public Date createDate(){
 		int year,month,day;
+		int dayLimit;
+		boolean leapYear = false;
 		
 		System.out.print("Year(YYYY): ");
-		year = input.nextInt();
+		year = iu.getInt(1000,3000);
+		if(year%4==0) leapYear=true;
 		
 		System.out.print("Month(MM): ");
-		month = input.nextInt();
+		month = iu.getInt(0,12);
+		dayLimit = checkMonthLimit(month,leapYear);
 		
 		System.out.print("Day(DD): ");
-		day = input.nextInt();
+		day = iu.getInt(0,dayLimit);
 	 	LocalDate ld = LocalDate.of(year,month,day);
 		return Date.from(ld.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		
 	 }
-	 
+	 public int checkMonthLimit(int month, boolean leapYear ) {
+	 	if(month == 4 || month == || month == 9 || month == 11) return 30;
+	 	else if (month == 2 && leapYear) return 29;
+	 	else if (month == 2) return 28;
+	 	else return 31;
+	  }
 	 public Address createAddress() {
 	 	String streetNumber, city, zipCode;
 	 	
 	 	System.out.println("Address: ");
 		System.out.print("Street Number: ");
-		streetNumber = input.next();	
+		streetNumber = iu.getString(100);	
 		System.out.print("City: ");
-		city = input.next();
+		city = iu.getString(100);
 		System.out.print("Zip Code: ");
-		zipCode = input.next();
+		zipCode = iu.getString(100);
 		return new Address(streetNumber,city,zipCode);
 		 
 	 }
 	 public Gender createGender() {
 	 	System.out.print("Gender(1=MALE,2=FEMALE): ");
-		int gender = input.nextInt();
+		int gender = iu.getInt(0,0);
 		if(gender==1) return Gender.MALE;
 		else return Gender.FEMALE;	
 	  }
 	 public double createGwa() {
 	 	System.out.print("GWA: ");
-		double gwa = input.nextDouble();
+		double gwa = iu.getDouble(1,5);
 		return gwa;
 	 
 	  }
 	  
 	 public String createSchool() {
 	 	System.out.print("School: ");
-		String school = input.next();
+		String school = iu.getString(100);
 		return school;
 		 
 	  }
 	 public boolean createEmployment() {
 	 	System.out.print("Employed(1=Yes,2=No): ");
-		int employed = input.nextInt();
+		int employed = iu.getInt(0,2);
 		if(employed==1) return true;
 		else return false;
 	  }
@@ -249,7 +259,7 @@ public class PersonView {
     			System.out.println("\n[1]Add Contact");
     			System.out.println("[2] Exit ");
     			System.out.print("Choice: ");
-    			choice = input.nextInt();
+    			choice = iu.getInt(0,0);
     			switch(choice) {
     				case 1: contactList.add(cv.addMenu());
     					break;
@@ -278,7 +288,7 @@ public class PersonView {
 			System.out.println("[9]Gender");
 			System.out.println("[10]Exit ");
 			System.out.print("Choice: ");
-			choice = input.nextInt();
+			choice = iu.getInt(0,0);
 			person = updatePerson(person, choice);
 		} while(choice!=10);
 	 	return person;

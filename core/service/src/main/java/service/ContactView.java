@@ -14,10 +14,12 @@ public class ContactView {
 	private PersonDAO pd;
 	private Scanner input = new Scanner(System.in).useDelimiter("\\n");
 	private EntityUtil eu;
+	private InputUtil iu;
 	public ContactView(){
 		cd = new ContactDAO();
 		eu = new EntityUtil();
 	 	pd = new PersonDAO();
+	 	iu = new InputUtil();
 	 }
 	
 	
@@ -32,7 +34,7 @@ public class ContactView {
 		System.out.println("[4]List Contact");
 		System.out.println("[5]Exit");
 	 	System.out.print("Choice: ");
-	 	choice = input.nextInt();
+	 	choice = iu.getInt(0,5);
 	 	menu(choice);
 	 	} while(choice!=5);
 	 }
@@ -43,7 +45,7 @@ public class ContactView {
 		switch(choice) {
 			case 1: eu.printList(pd.listPeople(""));
 					System.out.print("Select Person ID: ");
-					id = input.nextInt();
+					id = iu.getInt(0,0);
 					contact = addMenu();
 					eu.printContact(contact);
 					cd.addContact(id,contact);
@@ -52,15 +54,16 @@ public class ContactView {
 			case 2: System.out.println("List of Contacts"); 
 					cd.listContacts();
 					System.out.print("Select Contact ID: ");
-					id = input.nextInt();
+					id = iu.getInt(0,0);
 					contact = cd.getContact(id);
+					
 					contact = updateMenu(contact);
 					
 				break;
 			case 3: System.out.println("List of Contacts"); 
 					cd.listContacts();
 					System.out.print("Select Contact ID: ");
-					id = input.nextInt();
+					id = iu.getInt(0,0);
 					cd.deleteContact(id);
 				break;
 			case 4: System.out.println("List of Contacts"); 
@@ -80,7 +83,7 @@ public class ContactView {
 		System.out.println("[1]Contact Type ");
 		System.out.println("[2]Contact Details ");
 		System.out.println("[3]Exit ");
-		choice = input.nextInt();
+		choice = iu.getInt(0,3);
 		contact = editContact(contact,choice);
 		} while(choice!=3);
 		return contact;
@@ -124,7 +127,7 @@ public class ContactView {
 		System.out.println("[2] Landline");
 		System.out.println("[3] Mobile ");
 		System.out.print("Choice: ");
-	 	choice = input.nextInt();
+	 	choice = iu.getInt(0,3);
 	 	return choice;
 	 }
 	 
@@ -139,7 +142,7 @@ public class ContactView {
 	public String createDetails(Contact contact) {
 		System.out.println("Enter value for " + contact.getType());
 		System.out.print("Value: ");
-		String value = input.next();
+		String value = iu.getString(100);
 		return value;
 	 }
 

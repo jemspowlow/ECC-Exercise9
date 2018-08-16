@@ -72,11 +72,14 @@ public class PersonDAO {
          
          tx.commit();
          tx = null;
-      } catch (HibernateException e) {
+      } catch (HibernateException|IllegalArgumentException e) {
+         System.out.println("An error has occurred! Entity ID does not exist!");
          if (tx!=null) tx.rollback();
-         e.printStackTrace(); 
-         session.close(); 
+         tx = null;
+         //e.printStackTrace(); 
+         
       } finally {
+      	 session.close(); 
       }
    }
    
@@ -91,7 +94,8 @@ public class PersonDAO {
          tx.commit();
          tx = null;
          
-      } catch (HibernateException e) {
+      } catch (HibernateException|IllegalArgumentException e) {
+         System.out.println("An error has occurred! Entity ID does not exist!");
          if (tx!=null) tx.rollback();
          e.printStackTrace(); 
       } finally {
@@ -108,9 +112,8 @@ public class PersonDAO {
          tx = session.beginTransaction();
          persons = new LinkedHashSet(session.createQuery("FROM Person p left join fetch p.address left join fetch p.contactInfo "+sortQuery).list()); 
 		
-         tx.commit();
        } catch (HibernateException e) {
-         if (tx!=null) tx.rollback();
+         
          e.printStackTrace(); 
        } finally {
          session.close(); 
