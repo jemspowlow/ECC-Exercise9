@@ -11,13 +11,11 @@ import persistence.HibernateUtil;
 import org.hibernate.HibernateException; 
 import org.hibernate.Session; 
 import org.hibernate.Transaction;
-public class PersonDAO {
+public abstract class EntityDAO {
 	private EntityUtil eu;
-	public PersonDAO() { 
-		eu = new EntityUtil();
-	}
 
-	public Person getPerson(int id) {
+	public Person getPerson(int id){
+      EntityUtil eu = new EntityUtil();
       Session session =  HibernateUtil.getSessionFactory().openSession();
       Transaction tx = null;
       Person person = null;
