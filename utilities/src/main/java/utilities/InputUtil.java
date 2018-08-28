@@ -14,7 +14,8 @@ public class InputUtil {
 			try { 
 				num = input.nextInt();
 			 } catch(InputMismatchException e) {
-				num = 0;	
+				num = 0;
+				input.next();	
 			 }
 			
 			if(num <= lowerLimit || (num > upperLimit && upperLimit!=0)) {
@@ -35,7 +36,8 @@ public class InputUtil {
 			try { 
 				num = input.nextDouble();
 			 } catch(InputMismatchException e) {
-			 	num = -1.0;	
+			 	num = -1.0;
+			 	input.next();
 			 }
 			
 			if(num < lowerLimit || num > upperLimit) {

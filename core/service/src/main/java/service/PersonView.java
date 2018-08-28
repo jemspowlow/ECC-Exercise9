@@ -7,20 +7,26 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Comparator;
 import java.util.Collections;
+import org.hibernate.Hibernate;
 public class PersonView {
 	private PersonDAO pd;
 	private ContactView cv;
 	private EntityUtil eu;
 	private InputUtil iu;
-	//Scanner input = new Scanner(System.in).useDelimiter("\\n");
+	private RolesView rv;
+	private RolesDAO rd;
 	public PersonView(){
 		pd = new PersonDAO();
+		rd = new RolesDAO();
 		cv = new ContactView();
+		rv = new RolesView();
 	 	eu = new EntityUtil();
 	 	iu = new InputUtil();
 	 }
@@ -52,7 +58,7 @@ public class PersonView {
 					pd.addPerson(person);
 				break;
 				
-			case 2: eu.printList(pd.listPeople(""));
+			case 2: eu.printList(pd.listPeople("","id",true,"person"));
 					System.out.print("Select ID: ");
 					id = iu.getInt(0,0);
 					System.out.println("\n=====Editing Person=====");
@@ -61,7 +67,7 @@ public class PersonView {
 					System.out.println("==========================");
 					pd.updatePerson(person);
 				break;
-			case 3: eu.printList(pd.listPeople(""));
+			case 3: eu.printList(pd.listPeople("","id",true,"person"));
 					System.out.print("Select ID: ");
 					id = iu.getInt(0,0);
 					pd.deletePerson(id);
@@ -100,28 +106,36 @@ public class PersonView {
 	 public void sortPerson(int choice, int choice2) {
 	 	 	String sortQuery = "";
 			List persons;
+			String property = "";
+			boolean order = true;
 			switch(choice) {
 				
 				case 2: sortQuery = sortQuery.concat("ORDER BY p.dateHired");
+						property = "dateHired";
 					break;
 				
 				case 3: sortQuery = sortQuery.concat("ORDER BY p.name.lastName");
+						property = "name.lastName";
 					break;
 				
 				case 1:
 				case 4: 			
 			 	default: sortQuery = sortQuery.concat("ORDER BY p.id");
+			 			property = "id";
 			 		break;
 			 }
 			switch(choice2) {
+				default:
 				case 1: sortQuery = sortQuery.concat(" ASC");
+						order = true;
 					break;
 				case 2: sortQuery = sortQuery.concat(" DESC");
+			 			order = false;
 			 		break;
 			 }
 	 		
 	 		//retrieve list
-	 		persons = pd.listPeople(sortQuery);
+	 		persons = pd.listPeople(sortQuery,property,order,"person");
 	 		//if choice is equal to 1, sort using Comparator.comparingInt();
 	 		if(choice == 1) {
 	 			Comparator<Person> personComparator= Comparator.comparing(Person::getGwa);		
@@ -152,7 +166,7 @@ public class PersonView {
 	
 		createDateHired(person);
 		person.setcontactInfo(createContactInfo(person));
-		
+		person.setRoles(createRoles(person));
 		return person;
 	  }
 	public Person.Name createName(){
@@ -242,7 +256,9 @@ public class PersonView {
 	 	
 	 	return person;
 	  }
-	 
+	 //Method provides an empty list if there's no existing list of contacts.
+	 //If it exists, the list is returned.
+	 //checked by using Optional class.
 	 public List<Contact> createContactInfo(Person person) {
 	 	List<Contact> contactList;
 	 	
@@ -254,14 +270,15 @@ public class PersonView {
     	do { 	
     			for(Contact contact : contactList) {
     				eu.printContact(contact);
+    				eu.printString("\n");
     			
     			 }
     			System.out.println("\n[1]Add Contact");
     			System.out.println("[2] Exit ");
     			System.out.print("Choice: ");
-    			choice = iu.getInt(0,0);
+    			choice = iu.getInt(0,2);
     			switch(choice) {
-    				case 1: contactList.add(cv.addMenu());
+    				case 1: contactList.add(cv.addMenu(person));
     					break;
     				case 2: 
     					break;
@@ -273,6 +290,35 @@ public class PersonView {
     	return contactList;
 	  }
 	 
+	 public Set<Roles> createRoles(Person person) { 
+	 	Set<Roles> roleSet;
+	 	int id;
+	 	int choice=0;
+	 	
+	 	Optional<Set<Roles>> optSet = Optional.ofNullable(person.getRoles());
+	 	if(!optSet.isPresent()) roleSet = new LinkedHashSet<Roles>(); 
+		else roleSet = optSet.get();  
+		do { 
+			for(Roles role : roleSet) {
+				eu.printString(role.getLabel()+"\n");
+			 }
+			 eu.printString("\n\n====Role Selection=====\n");
+			 eu.printString("[1] Select role.\n");
+			 eu.printString("[2] Exit\n");
+			 eu.printString("Choice: ");
+			 choice = iu.getInt(0,2);
+			 switch(choice) { 
+			 	case 1: id = rv.getRoleId();
+			 			Roles role = rd.getRoles(id);
+			 			roleSet.add(role);
+			 		break;
+			 	default:
+			 		break;
+			 }
+		} while(choice != 2);
+		return roleSet;	  
+	  }
+
 	 public Person updateMenu(Person person) {
 		int choice=0;
 		do{
@@ -286,16 +332,16 @@ public class PersonView {
 			System.out.println("[7]Employment Status ");
 			System.out.println("[8]Date Hired ");
 			System.out.println("[9]Gender");
-			System.out.println("[10]Exit ");
+			System.out.println("[10] Roles");
+			System.out.println("[11] Exit ");
 			System.out.print("Choice: ");
 			choice = iu.getInt(0,0);
 			person = updatePerson(person, choice);
-		} while(choice!=10);
+		} while(choice!=11);
 	 	return person;
 	 }
 	 public Person updatePerson(Person person, int choice) {
-	 
-	 	
+	  	
 	 	switch(choice) {
 	 		case 1: person.setName(createName());
 	 			break;
@@ -315,12 +361,45 @@ public class PersonView {
 	 			break;
 	 		case 9: person.setGender(createGender());
 	 			break;
-	 		case 10:
+	 		case 10:printEditRolesMenu(person);
 	 			break;
 	 		default:
 	 			break;
 	 	 }
 	 	 return person;
 	 }
+	 public void printEditRolesMenu(Person person) {
+	 	int choice;
+	 	eu.printString("==Edit Roles==\n");
+	 	eu.printString("[1] Add a new Role to this person\n");
+	 	eu.printString("[2] Delete\n");
+	 	eu.printString("[3] Exit\n");
+	 	eu.printString("Choice: ");
+	 	choice = iu.getInt(0,3);
+	  	editRoles(choice, person);
+	  }
+	 public void editRoles(int choice, Person person) {
+		switch(choice) { 
+			case 1: person.setRoles(createRoles(person));
+				break;
+			case 2: deleteRoles(person);
+				break;
+			default:
+				break;
+		
+		 } 	
+	 	
+	  }
+	  
+	 public void deleteRoles(Person person) { 
+	 	Roles role;
+	 	eu.printString("====Remove Role from Person====\n\nRoles of "+person.getName().getFirstName()+":\n");
+		person.getRoles().stream()
+						.forEach(r->eu.printString("\tID: "+r.getId()+" Title:"+r.getLabel()+"\n"));
+		
+		eu.printString("Select Role ID to delete: ");						
+	 	role = rd.getRoles(iu.getInt(0,0));
+	 	person.getRoles().remove(role);
+	  }
 	   
  }

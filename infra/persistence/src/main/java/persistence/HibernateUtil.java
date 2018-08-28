@@ -2,6 +2,7 @@ package persistence;
 import org.hibernate.*;
 import org.hibernate.cfg.*;
 
+
 public class HibernateUtil {
 
 	private static SessionFactory sessionFactory;
@@ -9,7 +10,8 @@ public class HibernateUtil {
 	static {
 		try {
 			
-			sessionFactory = new Configuration().configure()
+			sessionFactory = new Configuration()
+												.configure()
 												.buildSessionFactory();
 		 } catch (Throwable ex) {
 		 	

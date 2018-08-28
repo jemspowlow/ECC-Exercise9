@@ -11,114 +11,33 @@ import persistence.HibernateUtil;
 import org.hibernate.HibernateException; 
 import org.hibernate.Session; 
 import org.hibernate.Transaction;
+import org.hibernate.Hibernate;
 public class PersonDAO {
 	private EntityUtil eu;
+	private EntityDAO ed;
 	public PersonDAO() { 
 		eu = new EntityUtil();
+		ed = new EntityDAO(Person.class);
 	}
 
 	public Person getPerson(int id) {
-      Session session =  HibernateUtil.getSessionFactory().openSession();
-      Transaction tx = null;
-      Person person = null;
-      try {
-         tx = session.beginTransaction();
-         person = (Person)session.get(Person.class, id); 
-         eu.printPerson(person);
-         tx.commit();
-         tx = null;
-         
-      } catch (HibernateException e) {
-         if (tx!=null) tx.rollback();
-         e.printStackTrace(); 
-         
-      } finally {
-      	session.close(); 
-      	return person;
-      }
+      return (Person) ed.getById(id);
    }
 	
-	public Integer addPerson(Person person) {
-      
-      Session session = HibernateUtil.getSessionFactory().openSession();
-      Transaction tx = null;
-      Integer personID = null;
-      
-      try {
-         tx = session.beginTransaction();
-         personID = (Integer) session.save(person); 
-         tx.commit();
-         tx = null;
-      } catch (HibernateException e) {
-         if (tx!=null) tx.rollback();
-         e.printStackTrace(); 
-      } finally {
-         session.close(); 
-      }
-      return personID;
+	public void addPerson(Person person) {
+      ed.add(person);
    }
       
     public void updatePerson(Person newPerson){
-      Session session =  HibernateUtil.getSessionFactory().openSession();
-      Transaction tx = null;
-      
-      try {
-      	 Integer PersonID = 1;
-         tx = session.beginTransaction();
-         //Person person = (Person)session.get(Person.class, PersonID);
-         
-         //person = newPerson;
-         Person merged = (Person) session.merge(newPerson);
-         
-         tx.commit();
-         tx = null;
-      } catch (HibernateException|IllegalArgumentException e) {
-         System.out.println("An error has occurred! Entity ID does not exist!");
-         if (tx!=null) tx.rollback();
-         tx = null;
-         //e.printStackTrace(); 
-         
-      } finally {
-      	 session.close(); 
-      }
+      ed.update(newPerson);
    }
    
-   public void deletePerson(Integer PersonID){
-      Session session =  HibernateUtil.getSessionFactory().openSession();
-      Transaction tx = null;
-      
-      try {
-         tx = session.beginTransaction();
-         Person Person = (Person)session.get(Person.class, PersonID); 
-         session.delete(Person); 
-         tx.commit();
-         tx = null;
-         
-      } catch (HibernateException|IllegalArgumentException e) {
-         System.out.println("An error has occurred! Entity ID does not exist!");
-         if (tx!=null) tx.rollback();
-         e.printStackTrace(); 
-      } finally {
-         session.close(); 
-      }
+   public void deletePerson(Integer personID){
+      ed.delete(personID);
    }
    
-   public List listPeople(String sortQuery) {
-
-      Session session = HibernateUtil.getSessionFactory().openSession();
-      Transaction tx = null;
-      Set persons = null;
-      try {
-         tx = session.beginTransaction();
-         persons = new LinkedHashSet(session.createQuery("FROM Person p left join fetch p.address left join fetch p.contactInfo "+sortQuery).list()); 
-		
-       } catch (HibernateException e) {
-         
-         e.printStackTrace(); 
-       } finally {
-         session.close(); 
-       }
-  		
-  		return new ArrayList(persons);   
+   public List listPeople(String sortQuery,String property, boolean order,String entityType) {
+	  String query = "FROM Person p left join fetch p.address left join fetch p.contactInfo left join fetch p.roles "+sortQuery;
+      return ed.listAll(query,property,order, entityType);
     } 
  }

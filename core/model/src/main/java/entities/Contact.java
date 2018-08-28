@@ -1,16 +1,24 @@
 package entities;
+import javax.persistence.*;
+@Entity
+@Table(name="contact")
 public class Contact {
+		@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
+		@Column(name = "id")	
 		private int id;
-		private ContactType type;
-		private String details;
-		private int idx;
-	
-		public Contact(){}
-		public Contact(ContactType type, String details) {
-			this.type = type;
-			this.details = details;
-		 }
 		
+		@Enumerated(EnumType.ORDINAL)
+		private ContactType type;
+		
+		private String details;
+		
+		private int idx;
+		
+		@ManyToOne
+		@JoinColumn (name = "person_id")
+		private Person person;
+		public Contact(){}
+			
 		public int getId() {
 			return id;
 		 }
@@ -38,5 +46,13 @@ public class Contact {
 		 }
 		public void setIdx(int idx) {
 			this.idx = idx;
+		 }
+		
+		
+		public Person getPerson() {
+			return person;
+		 }
+		public void setPerson(Person person) {
+			this.person = person;
 		 }
 	 }

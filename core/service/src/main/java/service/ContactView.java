@@ -43,16 +43,19 @@ public class ContactView {
 		Contact contact;
 		int id;
 		switch(choice) {
-			case 1: eu.printList(pd.listPeople(""));
+			case 1: eu.printList(pd.listPeople("","id",true,"person"));
 					System.out.print("Select Person ID: ");
 					id = iu.getInt(0,0);
 					contact = addMenu();
 					eu.printContact(contact);
-					cd.addContact(id,contact);
+					Person person = pd.getPerson(id);
+					contact.setPerson(person);
+					person.getcontactInfo().add(contact);
+					pd.updatePerson(person);
 				break;
 				
 			case 2: System.out.println("List of Contacts"); 
-					cd.listContacts();
+					eu.printContactList(cd.listContacts());
 					System.out.print("Select Contact ID: ");
 					id = iu.getInt(0,0);
 					contact = cd.getContact(id);
@@ -61,13 +64,13 @@ public class ContactView {
 					
 				break;
 			case 3: System.out.println("List of Contacts"); 
-					cd.listContacts();
+					eu.printContactList(cd.listContacts());
 					System.out.print("Select Contact ID: ");
 					id = iu.getInt(0,0);
 					cd.deleteContact(id);
 				break;
 			case 4: System.out.println("List of Contacts"); 
-					cd.listContacts();
+					eu.printContactList(cd.listContacts());
 				break;
 			case 5:
 				break;
@@ -111,12 +114,20 @@ public class ContactView {
 	 }
 	
 	
+	public Contact addMenu(Person person) {
+	 	Contact contact = new Contact();
+	 	int choice = printAddMenu();
+		contact.setType(createType(choice));
+		contact.setDetails(createDetails(contact));
+	  	contact.setPerson(person);
+	  	return contact;
+	}
+	//create a new contact entity only
 	public Contact addMenu() {
 	 	Contact contact = new Contact();
 	 	int choice = printAddMenu();
 		contact.setType(createType(choice));
 		contact.setDetails(createDetails(contact));
-	  	
 	  	return contact;
 	}
 	

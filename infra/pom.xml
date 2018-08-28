@@ -15,14 +15,6 @@
     <modules>
     	<module>buildtools</module>
     	<module>persistence</module>
-
     </modules>
-    <!-- Dependencies -->
 
-		<dependencies>
-		
-		</dependencies>
-   
-   	
-    <!-- End of Dependencies-->
 </project>

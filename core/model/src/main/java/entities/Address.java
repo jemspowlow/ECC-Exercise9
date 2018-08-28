@@ -1,8 +1,15 @@
 package entities;
+import javax.persistence.*;
+@Entity
 public class Address {
+		
+		@Id @GeneratedValue(strategy=GenerationType.SEQUENCE)
+		@Column(name = "id")
 		private int id;
+		@Column(name="street_number")
 		private String streetNumber;
 		private String city;
+		@Column(name="zip_code")
 		private String zipCode;
 		
 		public Address(){}

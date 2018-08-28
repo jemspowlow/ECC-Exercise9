@@ -11,14 +11,18 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory; 
 import org.hibernate.Transaction;
 import entities.*;
+import utilities.InputUtil;
 import persistence.HibernateUtil;
 public class Menu {
 	private ContactView cv;
 	private PersonView pv;
-	private Scanner input = new Scanner(System.in);
+	private RolesView rv;
+	private InputUtil iu;
 	public Menu() {
 		cv = new ContactView();
 		pv = new PersonView();
+		iu = new InputUtil();
+		rv = new RolesView();
 	}
 	public void displayMenu() {
 		int choice = 0;
@@ -28,11 +32,12 @@ public class Menu {
 			System.out.println("Select Entity:");
 			System.out.println("[1] Person ");
 			System.out.println("[2] Contact ");
-			System.out.println("[3] Exit ");
+			System.out.println("[3] Roles ");
+			System.out.println("[4] Exit ");
 			System.out.print("Choice: ");
-			choice = input.nextInt();	
+			choice = iu.getInt(0,4);	
 			selectMenu(choice);			
-		 } while(choice!=3);
+		 } while(choice!=4);
 		 HibernateUtil.shutdown();
 		 return;
 	
@@ -46,7 +51,7 @@ public class Menu {
    			
    			case 2: cv.printMenu();
    				break;
-   			case 3:
+   			case 3: rv.printMenu();
    				break;
    			default:
    				break;
