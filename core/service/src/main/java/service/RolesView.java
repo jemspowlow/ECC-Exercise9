@@ -94,18 +94,9 @@ public class RolesView {
 		return id;
 	}
 	
-	public void disassociate(Roles role) { 
-		
-		Set persons = role.getPersons();
-		for(Iterator innerIterator = persons.iterator(); innerIterator.hasNext();){
-        	Person person = (Person) innerIterator.next();
-			removeFromPerson(person, role);
-        }
-	} 
-	
 	public void removeFromPerson(Person p,Roles role) { 
 		p.getRoles().remove(role);
 		pd.updatePerson(p);
-	
+		
 	}
  }

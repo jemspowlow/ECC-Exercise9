@@ -1,0 +1,4 @@
+dao/PersonDAO.class
+dao/RolesDAO.class
+dao/EntityDAO.class
+dao/ContactDAO.class
